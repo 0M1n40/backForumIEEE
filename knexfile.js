@@ -13,5 +13,10 @@ module.export = {
         host: Host
         port: DbPort
         database: Database
+    },
+    migrations: {
+        tablename: "migrations",
+        directory: '${__dirname}/src/database/migrations'
     }
+}
 }
