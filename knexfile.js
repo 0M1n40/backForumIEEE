@@ -8,10 +8,10 @@ const Database = process.env.SERVER_DATABASE;
 module.export = {
     client: "postgresql",
     connection{
-        user: User
-        password: Password
-        host: Host
-        port: DbPort
+        user: User,
+        password: Password,
+        host: Host,
+        port: DbPort,
         database: Database
     },
     migrations: {
