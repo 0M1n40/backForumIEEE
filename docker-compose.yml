@@ -14,5 +14,25 @@ services:
     ports:
       - "5432:5432"
 
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agora_node
+    restart: always
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: docker
+      DB_PASSWORD: docker
+      DB_NAME: agora
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      
+
+
 volumes:
   postgres_data:
