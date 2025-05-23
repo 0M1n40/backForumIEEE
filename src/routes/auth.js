@@ -5,18 +5,14 @@ import * as User from '../models/User.js'
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
+// hello world route
+router.get('/verify', (req, res) => {
     res.json({ message: 'API is working' });
 });
 
-router.post('/', (req, res) => {
-    res.json({ message: 'API is working' });
-});
 
 
-router.get('/api', (req, res) => {
-    res.json({ message: 'API is working' })
-})
+// Register route
 
 router.post('/register', async (req, res) => {
     const { username, password, role } = req.body
@@ -30,6 +26,8 @@ router.post('/register', async (req, res) => {
     }
 
 })
+
+// Login route
 
 router.post('/login', async (req, res) => {
 
@@ -55,5 +53,9 @@ router.post('/login', async (req, res) => {
     }
 
 })
+
+// Logout route
+
+
 
 export default router
