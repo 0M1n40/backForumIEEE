@@ -5,6 +5,10 @@ import * as User from '../models/User.js'
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+    res.json({ message: 'API is working' })
+})
+
 // hello world route
 router.get('/verify', (req, res) => {
     res.json({ message: 'API is working' });
@@ -15,6 +19,7 @@ router.get('/verify', (req, res) => {
 // Register route
 
 router.post('/register', async (req, res) => {
+    
     const { username, password, role } = req.body
     const hashedPassword = await bcrypt.hash(password, 10)
 

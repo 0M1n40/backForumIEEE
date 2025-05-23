@@ -4,7 +4,7 @@ config()
 import express from "express";
 import cors from "cors";
 
-import defaultRoutes from "./routes/auth.js";
+import defaultRoutes from "./routes/default.js";
 import protectedRoutes from "./routes/protected.js";
 import accountRoutes from "./routes/account.js";
 import questionRoutes from "./routes/questions.js";
@@ -13,11 +13,10 @@ import authRoutes from "./routes/auth.js";
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Public Routes
 
 app.use("/api", defaultRoutes);
 app.use("/api/duvidas", questionRoutes);
