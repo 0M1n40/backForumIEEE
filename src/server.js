@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routes.js');
 const duvidaRoutes = require('./routes/duvidasroutes.js'); 
-const categoriaRoutes = require('./routes/categoriarouts.js')
+const respostaRoutes = require("./routes/respostaRoutes");
+const categoriaRoutes = require('./routes/categoriarouts.js');
 
 const app = express();
 const porta = process.env.SERVER_PORT || 3000;
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use(router);   
 app.use(duvidaRoutes); 
+app.use(respostaRoutes);
 app.use(categoriaRoutes);
 
 
