@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routes.js');
 const duvidaRoutes = require('./routes/duvidasroutes.js'); 
-const respostaRoutes = require('./routes/respostaRoutes');
+const respostaRoutes = require('./routes/respostaRoutes.js');
 const categoriaRoutes = require('./routes/categoriarouts.js');
 
 const app = express();
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error("Erro n„o capturado:", err.message);
+    console.error("Erro n√£o capturado:", err.message);
     console.error(err.stack);
     if (!res.headersSent) { 
         res.status(500).send({ erro: 'Ocorreu um erro inesperado no servidor.' });
