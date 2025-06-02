@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routes.js');
 const duvidaRoutes = require('./routes/duvidasroutes.js'); 
-const respostaRoutes = require("./routes/respostaRoutes");
+const respostaRoutes = require('./routes/respostaRoutes');
 const categoriaRoutes = require('./routes/categoriarouts.js');
 
 const app = express();

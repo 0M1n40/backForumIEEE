@@ -1,11 +1,18 @@
-const router = require("express").Router();
-const respostaController = require("../controller/respostaController");
-const authMiddleware = require("../middleware/auth");
+const express = require('express');
+const router = express.Router();
 
-router.post("/api/respostas", authMiddleware, respostaController.handleCreateResposta);
-router.get("/api/respostas/:duvida_id", respostaController.handleReadRespostas);
-router.patch("/api/respostas/:id", authMiddleware, respostaController.handleUpdateResposta);
-router.delete("/api/respostas/:id", authMiddleware, respostaController.handleDeleteResposta);
+const {
+  handleCreateResposta,
+  handleReadRespostas,
+  handleUpdateResposta,
+  handleDeleteResposta
+} = require('../controller/respostaController');
+
+router.post('/', handleCreateResposta);
+router.get('/', handleReadRespostas);
+router.get('/:id', handleReadRespostas);
+router.put('/:id', handleUpdateResposta);
+router.delete('/:id', handleDeleteResposta);
 
 module.exports = router;
 

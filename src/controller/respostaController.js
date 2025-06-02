@@ -1,4 +1,4 @@
-const respostaService = require("../service/respostaService");
+const respostaService = require("../services/respostaService");
 
 async function handleCreateResposta(req, res) {
     try {
