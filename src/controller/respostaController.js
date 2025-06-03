@@ -27,12 +27,17 @@ async function handleCreateResposta(req, res) {
 
 async function handleReadRespostas(req, res) {
     try {
-        const { duvida_id } = req.params;
+        const duvida_id = req.query.duvida_id;
+
+	if(!duvida_id){
+		return res.status(400).json({error:"Parâmetro duvida_id é obrigatório."});
+	}
+
         const respostas = await respostaService.readRespostas(duvida_id);
-        return res.status(200).json(respostas);
+        res.json(respostas);
     } catch (e) {
         console.error("Erro em handleReadRespostas:", e);
-        return res.status(500).json({ erro: "Erro ao buscar respostas" });
+        res.status(500).json({ erro: "Erro ao buscar respostas" });
     }
 }
 

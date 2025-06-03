@@ -1,7 +1,7 @@
 require('dotenv').config(); // Carrega o .env automaticamente
 
 module.exports = {
-  client: 'mysql',
+  client: 'mysql2',
   connection: {
     host: process.env.SERVER_HOST,        // ex: localhost
     port: process.env.SERVER_DB_PORT,     // ex: 3306

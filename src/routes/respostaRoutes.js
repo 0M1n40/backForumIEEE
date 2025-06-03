@@ -1,18 +1,14 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const respostaController = require("../controller/respostaController");
+const authMiddleware = require("../middleware/auth");
 
-const {
-  handleCreateResposta,
-  handleReadRespostas,
-  handleUpdateResposta,
-  handleDeleteResposta
-} = require('../controller/respostaController');
+// Rotas protegidas (requerem autenticação)
+router.post("/api/respostas", authMiddleware, respostaController.handleCreateResposta);
+router.patch("/api/respostas/:id", authMiddleware, respostaController.handleUpdateResposta);
+router.delete("/api/respostas/:id", authMiddleware, respostaController.handleDeleteResposta);
 
-router.post('/', handleCreateResposta);
-router.get('/', handleReadRespostas);
-router.get('/:id', handleReadRespostas);
-router.put('/:id', handleUpdateResposta);
-router.delete('/:id', handleDeleteResposta);
+// Rotas públicas
+router.get("/api/respostas", respostaController.handleReadRespostas);
+router.get("/api/respostas/:id", respostaController.handleReadRespostas); // leitura filtrada por duvida_id
 
 module.exports = router;
-

@@ -2,6 +2,7 @@ require('dotenv').config();
 const database = require("../database/exports");
 const crypto = require("crypto");
 
+
 async function createResposta(data) {
     const { descricao, duvida_id, usuario_id } = data;
 
@@ -16,6 +17,7 @@ async function createResposta(data) {
 
     return { id };
 }
+
 
 async function readRespostas(duvida_id) {
     const query = database("respostas")
@@ -33,6 +35,7 @@ async function readRespostas(duvida_id) {
     return await query;
 }
 
+
 async function updateResposta(id, descricao) {
     const updatedRows = await database("respostas")
         .where({ id })
@@ -44,17 +47,26 @@ async function updateResposta(id, descricao) {
     return updatedRows > 0;
 }
 
-async function deleteResposta(id) {
-    const deletedRows = await database("respostas")
-        .where({ id })
-        .del();
 
-    return deletedRows > 0;
+async function deleteResposta(id, usuarioAutenticadoId) {
+    const resposta = await database("respostas").where({ id }).first();
+
+    if (!resposta) {
+        throw new Error("Resposta não encontrada.");
+    }
+
+    if (resposta.usuario_id !== usuarioAutenticadoId) {
+        throw new Error("Usuário não autorizado a deletar esta resposta.");
+    }
+
+    await database("respostas").where({ id }).del();
+
+    return { message: "Resposta deletada com sucesso." };
 }
 
 module.exports = {
     createResposta,
     readRespostas,
     updateResposta,
-    deleteResposta
+    deleteResposta, 
 };
