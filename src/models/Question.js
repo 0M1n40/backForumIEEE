@@ -1,86 +1,77 @@
-const db = require('../db/knex.js')
+const db = require('../db/knex.js');
 
-const findById = id =>
-    db('questions')
-        .where({ id })
-        .first()
-        .then(row => {
-            if (!row) return null
-            return {
-                id: row.id,
-                title: row.title,
-                categoryId: row.category_id,
-                category: row.category_description,
-                content: row.content,
-                solved: row.solved,
-                userId: row.user_id,
-                createdAt: row.created_at,
-                updatedAt: row.updated_at
-            }
-        })
 
-const createQuestion = question =>
-    db('questions')
-        .insert(question)
-        .then(rows => rows[0])
+const Question = {
+    /**
+     * Cria uma nova dúvida (Padrão para MySQL/SQLite)
+     */
+    async create(questionData) {
+        try {
+            // Passo 1: Insere os dados e pega o ID da nova linha.
+            const [id] = await db('questions').insert(questionData);
 
-const resolveQuestion = id =>
-    db('questions')
-        .where({ id })
-        .update({ solved: true })
-        .then(count => count > 0 ? findById(id) : null)
+            // Passo 2: Usa esse ID para buscar a dúvida completa com os JOINs.
+            // A função 'this.findById' abaixo precisa estar 100% correta.
+            const newQuestion = await this.findById(id);
+            
+            return newQuestion;
+        } catch (error) {
+            console.error("ERRO NO MODEL AO CRIAR DÚVIDA:", error);
+            throw error; // Envia o erro detalhado para o controller
+        }
+    },
 
-const deleteQuestion = id =>
-    db('questions')
-        .where({ id })
-        .del()
-        .then(count => count > 0)
+    /**
+     * Busca UMA dúvida pelo ID, com os dados do autor e categoria.
+     * ESTA FUNÇÃO PRECISA ESTAR CORRETA.
+     */
+    async findById(id) {
+        return db('questions as q')
+            .innerJoin('categories as c', 'q.category_id', 'c.id')
+            .innerJoin('users as u', 'q.user_id', 'u.id')
+            .where('q.id', id)
+            .select(
+                'q.id', 
+                'q.title as titulo', 
+                'q.content as descricao', 
+                'q.created_at as dataPostagem',
+                'q.user_id as usuarioId',
+                'u.name as nomeUsuario', 
+                'c.description as categoria'
+            )
+            .first();
+    },
 
-const updateQuestion = (id, question) =>
-    db('questions')
-        .where({ id })
-        .update(question)
-        .then(count => count > 0)
+    /**
+     * Busca TODAS as dúvidas, com os dados do autor e categoria.
+     */
+    async findAll() {
+        return db('questions as q')
+            .innerJoin('categories as c', 'q.category_id', 'c.id')
+            .innerJoin('users as u', 'q.user_id', 'u.id')
+            .select(
+                'q.id', 'q.title as titulo', 'q.content as descricao',
+                'q.created_at as dataPostagem', 'q.user_id as usuarioId',
+                'u.name as nomeUsuario', 'c.description as categoria'
+            )
+            .orderBy('q.created_at', 'desc');
+    },
 
-const findByCategoryName = categoryName =>
-    db('questions')
-        .join('categories', 'questions.category_id', 'categories.id')
-        .where('categories.description', categoryName)
-        .select('questions.*')
-        .then(rows => rows)
+    /**
+     * Atualiza uma dúvida.
+     */
+    async update(id, questionData) {
+        const count = await db('questions').where({ id }).update(questionData);
+        if (count === 0) return null;
+        return this.findById(id); // Retorna o dado atualizado
+    },
 
-const findAll = () =>
-    db('questions as q')
-        .innerJoin('categories as c', 'q.category_id', 'c.id')
-        .select(
-            'q.id', 
-            'q.title', 
-            'q.category_id',
-            'c.description as category_description', 
-            'q.content',
-            'q.solved',
-            'q.user_id',
-            'q.created_at', 
-            'q.updated_at'
-        )
-        .then(rows => rows.map(row => ({
-            id: row.id,
-            title: row.title,
-            categoryId: row.category_id,
-            category: row.category_description,
-            content: row.content,
-            solved: row.solved,
-            createdAt: row.created_at,
-            userId: row.user_id,
-            updatedAt: row.updated_at
-        })))
+    /**
+     * Deleta uma dúvida.
+     */
+    async delete(id) {
+        return db('questions').where({ id }).del();
+    }
+};
 
-module.exports = {
-    findById,
-    createQuestion,
-    deleteQuestion,
-    updateQuestion,
-    findByCategoryName,
-    findAll,
-    resolveQuestion
-}
+module.exports = Question;
