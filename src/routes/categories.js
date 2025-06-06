@@ -6,7 +6,7 @@ const router = require('express').Router();
 router.get('/', async (req, res) => {
     try {
         const categories = await Category.findAll()
-        res.json({ categories })
+       res.json(categories);
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error fetching categories' })
     }
