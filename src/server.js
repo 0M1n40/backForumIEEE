@@ -12,6 +12,7 @@ const authRoutes = require("./routes/auth.js")
 const categoriesRoutes = require("./routes/categories.js")
 const questionsLikesRoutes = require("./routes/questionsLikes.js")
 const repliesLikesRoutes = require("./routes/repliesLikes.js")
+const usersRoutes = require('./routes/users.js')
 
 const PORT = process.env.PORT || 3000;
 
@@ -29,6 +30,7 @@ app.use("/api/respostas", repliesRoutes);
 app.use("/api/respostas/curtidas", repliesLikesRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api/users', usersRoutes)
 
 app.use("/api/conta", accountRoutes)
 app.use("/api/admin", adminRoutes)

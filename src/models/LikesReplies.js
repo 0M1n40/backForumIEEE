@@ -1,7 +1,9 @@
 const db = require('../db/knex');
 
+const TABLE_NAME = 'replies_likes'
+
 const findById = id =>
-    db('replies_likes')
+    db(`${TABLE_NAME}`)
         .where({ reply_id: id })
         .count('user_id as likesCount')
         .then(rows => {
@@ -11,13 +13,19 @@ const findById = id =>
             return rows[0].likesCount;
         })
 
+const findByUserId = (replyId, userId) =>
+    db(TABLE_NAME)
+        .where({ reply_id: replyId, user_id: userId })
+        .first()
+        .then()
+
 const createLike = (replyId, userId) =>
-    db('replies_likes')
+    db(`${TABLE_NAME}`)
         .insert({ reply_id: replyId, user_id: userId })
         .then(() => ({ replyId, userId }));
 
 const deleteLike = (replyId, userId) =>
-    db('replies_likes')
+    db(`${TABLE_NAME}`)
         .where({ reply_id: replyId, user_id: userId })
         .del()
         .then(rowsAffected => {
@@ -29,6 +37,7 @@ const deleteLike = (replyId, userId) =>
 
 module.exports = {
     findById,
+    findByUserId,
     createLike,
     deleteLike
 };

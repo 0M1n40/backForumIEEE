@@ -1,24 +1,32 @@
 const db = require('../db/knex.js')
+const {v4} = require('uuid')
 
-const createReply = reply =>
-    db('replies')
-        .insert(reply)
-        .then(rows => rows[0])
+const TABLE_NAME = 'replies'
+
+const createReply = async reply => {
+ 
+    const id = v4()
+
+    await db(`${TABLE_NAME}`)
+            .insert({ id, ...reply})
+
+    return findById(id)
+}
 
 const deleteReply = id =>
-    db('replies')
+    db(`${TABLE_NAME}`)
         .where({ id })
         .del()
         .then(count => count > 0)
 
 const updateReply = (id, reply) =>
-    db('replies')
+    db(`${TABLE_NAME}`)
         .where({ id })
         .update(reply)
         .then(count => count > 0)
 
 const findById = id =>
-    db('replies')
+    db(`${TABLE_NAME}`)
         .where({ id })
         .first()
         .then(row => {
@@ -34,7 +42,7 @@ const findById = id =>
         })
 
 const findByQuestionId = questionId =>
-    db('replies')
+    db(`${TABLE_NAME}`)
         .where({ question_id: questionId })
         .select('id', 'content', 'user_id', 'created_at', 'updated_at')
         .then(rows => rows.map(row => ({
@@ -46,7 +54,7 @@ const findByQuestionId = questionId =>
         })))
 
 const findAll = () =>
-    db('replies')
+    db(`${TABLE_NAME}`)
         .select('id', 'content', 'question_id', 'user_id', 'created_at', 'updated_at')
         .then(rows => rows.map(row => ({
             id: row.id,
