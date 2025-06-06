@@ -54,6 +54,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 
     try {
+        // o newCategory existe??
         const newCategory = await Category.create({ description });
         // Se chegar aqui, o sucesso é garantido
         res.status(201).json(newCategory);
