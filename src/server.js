@@ -27,7 +27,7 @@ app.use("/api/duvidas", questionRoutes);
 app.use("/api/duvidas/curtidas", questionsLikesRoutes);
 app.use("/api/respostas", repliesRoutes);
 app.use("/api/respostas/curtidas", repliesLikesRoutes);
-app.use("/api/categorias", categoriesRoutes);
+app.use("/api/categories", categoriesRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/conta", accountRoutes)
