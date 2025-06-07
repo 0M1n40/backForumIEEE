@@ -3,32 +3,24 @@ const db = require("../db/knex.js");
 const User = {
   /**
    * Cria um novo usuário.
-   * @param {object} userData - Objeto com os dados do novo usuário.
    */
   async create(userData) {
-    try {
-      const [id] = await db("users").insert(userData);
-      // Retorna o usuário recém-criado (sem a senha)
-      return this.findById(id);
-    } catch (error) {
-      throw error;
-    }
+    const [id] = await db("users").insert(userData).returning('id');
+    return this.findById(id);
   },
 
   /**
-   * Encontra um usuário pelo seu ID (chave primária).
-   * @param {string} id - O ID do usuário.
+   * Encontra um usuário pelo seu ID, retornando apenas dados públicos.
    */
   async findById(id) {
     return db("users")
       .where({ id })
-      .select("id", "name", "username", "created_at")
+      .select("id", "name", "username", "role", "created_at")
       .first();
   },
 
   /**
-   * Encontra um usuário pelo seu username (email). Inclui a senha para o processo de login.
-   * @param {string} username - O email do usuário.
+   * Encontra um usuário pelo seu username (para login), incluindo a senha.
    */
   async findByUsername(username) {
     return db("users").where({ username }).first();

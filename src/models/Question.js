@@ -2,35 +2,70 @@
 const db = require("../db/knex.js");
 
 // Query base reutilizável para evitar repetição de código
-const baseQuery = () => db("questions as q")
-    .innerJoin("categories as c", "q.category_id", "c.id")
-    .innerJoin("users as u", "q.user_id", "u.id");
+// const baseQuery = () => db("questions as q")
+//     .innerJoin("categories as c", "q.category_id", "c.id")
+//     .innerJoin("users as u", "q.user_id", "u.id");
 
-// Colunas selecionadas para garantir consistência
+// // Colunas selecionadas para garantir consistência
+// const selectedColumns = [
+//     "q.id",
+//     "q.title as titulo",
+//     "q.content as descricao",
+//     "q.created_at as dataPostagem",
+//     "q.user_id as usuarioId",
+//     "q.category_id as categoriaId", // <-- CORREÇÃO APLICADA
+//     "u.name as nomeUsuario",
+//     "c.description as categoria"
+// ];
+
+// const Question = {
+//     async create(questionData) {
+//         try {
+//             const [id] = await db("questions").insert(questionData).returning('id');
+//             return this.findById(id);
+//         } catch (error) {
+//             console.error("ERRO NO MODEL AO CRIAR DÚVIDA:", error);
+//             throw error;
+//         }
+//     },
+
+//     async findById(id) {
+//         // Usa a query base, adiciona o filtro e seleciona as colunas padronizadas
+//         return baseQuery().where("q.id", id).select(selectedColumns).first();
+//     },
+
+//     async findAll() {
+//         return baseQuery().select(selectedColumns).orderBy("q.created_at", "desc");
+//     },
+
+// Query base reutilizável para evitar repetição de código
+const baseQuery = () => db("questions as q")
+    .innerJoin("users as u", "q.user_id", "u.id")
+    .innerJoin("categories as c", "q.category_id", "c.id");
+
+// Colunas selecionadas para garantir consistência e evitar expor dados sensíveis
 const selectedColumns = [
-    "q.id",
-    "q.title as titulo",
+     "q.id",
+     "q.title as titulo",
     "q.content as descricao",
-    "q.created_at as dataPostagem",
-    "q.user_id as usuarioId",
-    "q.category_id as categoriaId", // <-- CORREÇÃO APLICADA
+     "q.created_at as dataPostagem",
+         "q.user_id as usuarioId",
+     "q.category_id as categoriaId", // <-- CORREÇÃO APLICADA
     "u.name as nomeUsuario",
-    "c.description as categoria"
+     "c.description as categoria"
 ];
 
+/**
+ * @namespace Question
+ * @description Model para operações na tabela 'questions', já incluindo dados do autor e categoria.
+ */
 const Question = {
     async create(questionData) {
-        try {
-            const [id] = await db("questions").insert(questionData).returning('id');
-            return this.findById(id);
-        } catch (error) {
-            console.error("ERRO NO MODEL AO CRIAR DÚVIDA:", error);
-            throw error;
-        }
+        const [id] = await db("questions").insert(questionData).returning('id');
+        return this.findById(id);
     },
 
     async findById(id) {
-        // Usa a query base, adiciona o filtro e seleciona as colunas padronizadas
         return baseQuery().where("q.id", id).select(selectedColumns).first();
     },
 
