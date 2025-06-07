@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: agora
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agora_node
+    restart: always
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: docker
+      DB_PASSWORD: docker
+      DB_NAME: agora
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+      
+
+
+volumes:
+  postgres_data:
